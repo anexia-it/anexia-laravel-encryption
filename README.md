@@ -9,7 +9,7 @@ A Laravel package that adds database encryption support to eloquent models.
 Install the module via composer, therefore adapt the require part of your composer.json:
 ```
 "require": {
-    "anexia/eloquent-encryption": "1.0.0"
+    "anexia/laravel-encryption": "1.0.0"
 }
 ```
 Now run
@@ -25,7 +25,7 @@ to add the packages source code to your /vendor directory and update the autoloa
     /*
      * Package Service Providers...
      */
-    \Anexia\EloquentEncryption\DatabaseEncryptionServiceProvider::class,
+    \Anexia\LaravelEncryption\DatabaseEncryptionServiceProvider::class,
 ]
 ```
 
@@ -49,9 +49,9 @@ Currently only Postgres and PGP is supported.
 ],
 ```
 
-#2. Usage
+# 2. Usage
 
-#2.1 Models
+## 2.1 Models
 
 Add the DatabaseEncryption Trait to your eloquent model.
 
@@ -60,7 +60,7 @@ Add the DatabaseEncryption Trait to your eloquent model.
 
 namespace App;
 
-use Anexia\EloquentEncryption\DatabaseEncryption;
+use Anexia\LaravelEncryption\DatabaseEncryption;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -111,11 +111,11 @@ class User extends Authenticatable
 }
 ```
 
-#2.2 Updates
+## 2.2 Updates
 
 Just call the save() method on the model. Fields will be encrypted automatically.
 
-#2.3 Queries
+## 2.3 Queries
 
 Use the macro `withDecryptKey` for automatic decryption.
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Anexia\EloquentEncryption;
+namespace Anexia\LaravelEncryption;
 
 
 use Illuminate\Database\Eloquent\Builder;

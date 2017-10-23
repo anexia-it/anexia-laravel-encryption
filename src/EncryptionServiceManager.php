@@ -1,6 +1,6 @@
 <?php
 
-namespace Anexia\EloquentEncryption;
+namespace Anexia\LaravelEncryption;
 
 
 use Illuminate\Database\Eloquent\Model;
@@ -51,7 +51,7 @@ class EncryptionServiceManager
                 throw new \RuntimeException("No cipher set for connection '$connectionName'");
             }
 
-            $className = '\\Anexia\\EloquentEncryption\\';
+            $className = '\\Anexia\\LaravelEncryption\\';
             switch ($config['driver']) {
                 case 'pgsql':
                     $className .= 'Postgres';
