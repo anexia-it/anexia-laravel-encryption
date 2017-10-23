@@ -1,0 +1,20 @@
+{
+  "name": "anexia/eloquent-encryption",
+  "description": "Encryption and decryption for eloquent models",
+  "type": "library",
+  "version": "1.0.0",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Masood Lodin",
+      "email": "mlodin@anexia-it.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Anexia\\EloquentEncryption\\": "src"
+    }
+  }
+}
