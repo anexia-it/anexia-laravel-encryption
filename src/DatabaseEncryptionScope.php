@@ -93,7 +93,7 @@ class DatabaseEncryptionScope implements Scope
             $encryptedFields = $model::getEncryptedFields();
             if (in_array($attribute, $encryptedFields)) {
                 $encryptionService = $model::getEncryptionService();
-                $builder->whereRaw($encryptionService->getDecryptExpression($attribute, $decryptKey) . " = :value", ['value' => $value]);
+                $builder->whereRaw($encryptionService->getDecryptExpression($attribute, $decryptKey) . " = ?", [$value]);
             }
             return $builder;
         });
