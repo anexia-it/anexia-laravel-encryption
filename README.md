@@ -117,12 +117,58 @@ Just call the save() method on the model. Fields will be encrypted automatically
 
 ## 2.3 Queries
 
+Per default the encrypted properties will be replaced by their corresponding "_encrypted" value.
+
+```
+$user = User::find(1);
+```
+
+The above query will have the property "password_encrypted" and no "password" property.
+
+### 2.3.1 Decrypted properties
+
 Use the macro `withDecryptKey` for automatic decryption.
+
+### 2.3.1 'select *' queries
 
 ```
 $user = User::withDecryptKey('thisismysupersecretencryptionkey')->find(1);
 ```
 
 In the example above $user will have two properties:
+* password: the decrypted password
+* password_encrypted: the encrypted value from the database
+* id
+* name
+* email
+* remember_token
+
+### 2.3.2 Select certain fields
+
+```
+$user = User::->find(1, ['id']);
+```
+or
+```
+$user = User::withDecryptKey('thisismysupersecretencryptionkey')->find(1, ['id']);
+```
+
+In both examples above $user will only have one property:
+* id
+
+```
+$user = User::->find(1, ['id', 'password']);
+```
+
+In the example above $user will only have two properties:
+* id
+* password_encrypted: the encrypted value from the database
+
+```
+$user = User::withDecryptKey('thisismysupersecretencryptionkey')->find(1, ['id', 'password']);
+```
+
+In the example above $user will only have three properties:
+* id
 * password: the decrypted password
 * password_encrypted: the encrypted value from the database

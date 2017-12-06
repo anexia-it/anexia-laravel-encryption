@@ -2,8 +2,7 @@
 
 namespace Anexia\LaravelEncryption;
 
-
-use Illuminate\Database\Eloquent\Builder;
+use \Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Facades\DB;
@@ -26,8 +25,17 @@ class DatabaseEncryptionScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        foreach ($model::getEncryptedFields() as $encryptedField) {
-            $builder->addSelect(DB::raw("$encryptedField as {$encryptedField}_encrypted"));
+        $encryptedFields = $model::getEncryptedFields();
+        if (!empty($encryptedFields)) {
+            $builder->setEncryptionModel($model);
+
+            foreach ($encryptedFields as $encryptedField) {
+                $builder->addEncryptionSelect([
+                    'column'    => $encryptedField,
+                    'alias'     => "{$encryptedField}_encrypted",
+                    'select'    => DB::raw("$encryptedField as {$encryptedField}_encrypted")
+                ]);
+            }
         }
     }
 
@@ -54,11 +62,19 @@ class DatabaseEncryptionScope implements Scope
     {
         $builder->macro('withDecryptKey', function (Builder $builder, $decryptKey) {
             $model = $builder->getModel();
-            /** @var DatabaseEncryptionServiceInterface $encryptionService */
-            $encryptionService = $model::getEncryptionService();
-            foreach ($model::getEncryptedFields() as $encryptedField) {
-                $decryptStmt = $encryptionService->getDecryptExpression($encryptedField, $decryptKey);
-                $builder->addSelect(DB::raw("$decryptStmt as $encryptedField"));
+            $encryptedFields = $model::getEncryptedFields();
+            if (!empty($encryptedFields)) {
+                $builder->setEncryptionModel($model);
+
+                /** @var DatabaseEncryptionServiceInterface $encryptionService */
+                $encryptionService = $model::getEncryptionService();
+                foreach ($encryptedFields as $encryptedField) {
+                    $decryptStmt = $encryptionService->getDecryptExpression($encryptedField, $decryptKey);
+                    $builder->addEncryptionSelect([
+                        'column' => $encryptedField,
+                        'select' => DB::raw("$decryptStmt as $encryptedField")
+                    ]);
+                }
             }
             return $builder;
         });
