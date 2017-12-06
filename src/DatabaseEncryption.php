@@ -118,9 +118,6 @@ trait DatabaseEncryption
             $attributes = $this->getArrayableAttributes()
         );
 
-        var_dump($attributes);
-        die();
-
         $attributes = $this->addMutatedAttributesToArray(
             $attributes, $mutatedAttributes = $this->getMutatedAttributes()
         );
@@ -138,9 +135,6 @@ trait DatabaseEncryption
         foreach ($this->getArrayableAppends() as $key) {
             $attributes[$key] = $this->mutateAttributeForArray($key, null);
         }
-
-        var_dump($attributes);
-        die('adfasdf');
 
         return $attributes;
     }
