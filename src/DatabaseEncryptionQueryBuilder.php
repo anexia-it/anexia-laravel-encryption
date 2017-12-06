@@ -66,7 +66,7 @@ class DatabaseEncryptionQueryBuilder extends Builder
                     $this->columns = [];
 
                     /*
-                     * Select all visible fields (avoid select *)
+                     * Select all visible columns (avoid select *)
                      */
                     $visibles = array_diff(array_merge($model->getFillable(), $model->getGuarded()), $model->getHidden());
                     $unencryptedVisibles = array_unique(array_diff($visibles, array_column($this->encryptionColumns, 'column')));
@@ -83,17 +83,17 @@ class DatabaseEncryptionQueryBuilder extends Builder
                         $attributes[] = $model->getUpdatedAtColumn();
                     }
 
-                    // add all visible unencrypted fields
+                    // add all visible unencrypted columns
                     foreach ($attributes as $attribute) {
                         $this->columns[] = $attribute;
                     }
 
-                    // add all encrypted fields
+                    // add all encrypted columns
                     $this->columns = array_merge($this->columns, array_column($this->encryptionColumns, 'select'));
                 } else {
                     $this->columns = [];
 
-                    // add unencrypted columns
+                    // add all visible unencrypted columns
                     $encryptionColumnNames = array_column($this->encryptionColumns, 'column');
                     foreach ($columns as $column) {
                         if (!in_array($column, $encryptionColumnNames)) {

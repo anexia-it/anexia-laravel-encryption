@@ -172,3 +172,13 @@ In the example above $user will only have three properties:
 * id
 * password: the decrypted password
 * password_encrypted: the encrypted value from the database
+
+### 2.3.3 Check for certain decoded values
+
+Use the macro `whereDecripted` to run a "where field = value" query on an encrypted property.
+
+```
+$user = User::->whereDecrypted('password', 'thisIsTheWantedPassword', 'thisismysupersecretencryptionkey')->first();
+```
+ 
+In the example above $user will be the first entry with the (decrypted) password 'thisIsTheWantedPassword'.
