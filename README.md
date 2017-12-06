@@ -178,7 +178,7 @@ In the example above $user will only have three properties:
 Use the macro `whereDecripted` to run a "where field = value" query on an encrypted property.
 
 ```
-$user = User::->whereDecrypted('password', 'thisIsTheWantedPassword', 'thisismysupersecretencryptionkey')->first();
+$user = User::whereDecrypted('password', 'thisIsTheWantedPassword', 'thisismysupersecretencryptionkey')->first();
 ```
  
 In the example above $user will be the first entry with the (decrypted) password 'thisIsTheWantedPassword'.
