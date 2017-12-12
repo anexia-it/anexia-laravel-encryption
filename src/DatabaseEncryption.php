@@ -10,7 +10,7 @@ trait DatabaseEncryption
     /**
      * @var DatabaseEncryptionServiceInterface
      */
-    private static $encryptionService;
+    protected static $encryptionService;
 
     /**
      * Initialize global scope for decryption

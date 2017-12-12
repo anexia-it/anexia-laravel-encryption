@@ -89,6 +89,10 @@ class DatabaseEncryptionScope implements Scope
     protected function addWhereDecrypted(Builder $builder)
     {
         $builder->macro('whereDecrypted', function (Builder $builder, $attribute, $value, $decryptKey) {
+            // make sure to enclose the attribute name in quotes
+            if (preg_match('/^(["\']).*\1$/m', $attribute) == 0) {
+                $attribute = '"' . $attribute . '"';
+            }
             $model = $builder->getModel();
             $encryptedFields = $model::getEncryptedFields();
             if (in_array($attribute, $encryptedFields)) {
