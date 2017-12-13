@@ -14,7 +14,7 @@ class DatabaseEncryptionScope implements Scope
      *
      * @var array
      */
-    protected $extensions = ['WithDecryptKey', 'WhereDecrypted'];
+    protected $extensions = ['WithDecryptKey'];
 
     /**
      * Apply the scope to a given Eloquent query builder.
@@ -75,29 +75,6 @@ class DatabaseEncryptionScope implements Scope
                         'select' => DB::raw("$decryptStmt as $encryptedField")
                     ]);
                 }
-            }
-            return $builder;
-        });
-    }
-
-    /**
-     * Add the where-decrypted extension to the builder.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder $builder
-     * @return void
-     */
-    protected function addWhereDecrypted(Builder $builder)
-    {
-        $builder->macro('whereDecrypted', function (Builder $builder, $attribute, $value, $decryptKey) {
-            // make sure to enclose the attribute name in quotes
-            if (preg_match('/^(["\']).*\1$/m', $attribute) == 0) {
-                $attribute = '"' . $attribute . '"';
-            }
-            $model = $builder->getModel();
-            $encryptedFields = $model::getEncryptedFields();
-            if (in_array($attribute, $encryptedFields)) {
-                $encryptionService = $model::getEncryptionService();
-                $builder->whereRaw($encryptionService->getDecryptExpression($attribute, $decryptKey) . " = ?", [$value]);
             }
             return $builder;
         });
