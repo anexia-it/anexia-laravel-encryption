@@ -62,12 +62,21 @@ trait DatabaseEncryption
         if (count($encryptedFields) && !$this->getEncryptKey()) {
             throw new \RuntimeException("No encryption key specified");
         }
+        $originalAttributes = $this->attributes;
         foreach ($encryptedFields as $encryptedField) {
             if (isset($this->attributes[$encryptedField])) {
                 $this->attributes[$encryptedField] = DB::raw(static::getEncryptionService()->getEncryptExpression($this->attributes[$encryptedField], static::getEncryptKey()));
             }
         }
-        return parent::performInsert($query);
+        $inserted = parent::performInsert($query);
+
+        // reset the attributes to the decrypted values
+        foreach ($encryptedFields as $encryptedField) {
+            if (isset($this->attributes[$encryptedField])) {
+                $this->attributes[$encryptedField] = $originalAttributes[$encryptedField];
+            }
+        }
+        return $inserted;
     }
 
     /**
@@ -81,12 +90,21 @@ trait DatabaseEncryption
         if (count($encryptedFields) && !$this->getEncryptKey()) {
             throw new \RuntimeException("No encryption key specified");
         }
+        $originalAttributes = $this->attributes;
         foreach ($encryptedFields as $encryptedField) {
             if (isset($this->attributes[$encryptedField])) {
                 $this->attributes[$encryptedField] = DB::raw(static::getEncryptionService()->getEncryptExpression($this->attributes[$encryptedField], static::getEncryptKey()));
             }
         }
-        return parent::performUpdate($query);
+        $updated = parent::performUpdate($query);
+
+        // reset the attributes to the decrypted values
+        foreach ($encryptedFields as $encryptedField) {
+            if (isset($this->attributes[$encryptedField])) {
+                $this->attributes[$encryptedField] = $originalAttributes[$encryptedField];
+            }
+        }
+        return $updated;
     }
 
     /**
@@ -147,7 +165,7 @@ trait DatabaseEncryption
      */
     protected function getArrayableItems(array $values)
     {
-        $encryptedFields = self::getEncryptedFields();
+        $encryptedFields = static::getEncryptedFields();
 
         if (count($this->getVisible()) > 0) {
             $visibles = $this->getVisible();

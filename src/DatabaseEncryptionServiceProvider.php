@@ -14,7 +14,11 @@ class DatabaseEncryptionServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Builder::macro('whereDecrypted', function($attribute, $operator = '=', $value, $decryptKey){
+        Builder::macro('whereDecrypted', function($attribute, $operator = null, $value = null, $decryptKey = null){
+            list($value, $operator, $decryptKey) = $this->query->prepareDecryptionValueOperatorAndDecryptKey(
+                $value, $operator, $decryptKey, func_num_args() == 3
+            );
+
             $model = $this->getModel();
             $encryptedFields = $model::getEncryptedFields();
             if (in_array($attribute, $encryptedFields)) {
@@ -23,10 +27,14 @@ class DatabaseEncryptionServiceProvider extends ServiceProvider
             } else {
                 $this->where($attribute, $operator, $value);
             }
+
             return $this;
         });
 
-        Builder::macro('orWhereDecrypted', function($attribute, $operator = '=', $value, $decryptKey){
+        Builder::macro('orWhereDecrypted', function($attribute, $operator = null, $value = null, $decryptKey = null){
+            list($value, $operator, $decryptKey) = $this->query->prepareDecryptionValueOperatorAndDecryptKey(
+                $value, $operator, $decryptKey, func_num_args() == 3
+            );
             $model = $this->getModel();
             $encryptedFields = $model::getEncryptedFields();
             if (in_array($attribute, $encryptedFields)) {
@@ -38,7 +46,7 @@ class DatabaseEncryptionServiceProvider extends ServiceProvider
             return $this;
         });
 
-        Builder::macro('orderByDecrypted', function($attribute, $direction = 'asc', $decryptKey){
+        Builder::macro('orderByDecrypted', function($attribute, $direction = 'asc', $decryptKey = null){
             $model = $this->getModel();
             $encryptedFields = $model::getEncryptedFields();
             if (in_array($attribute, $encryptedFields)) {

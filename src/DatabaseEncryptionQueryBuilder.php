@@ -57,7 +57,7 @@ class DatabaseEncryptionQueryBuilder extends Builder
 
         // encrypted columns replace their default (original) columns
         if ($this->encryptionModel instanceof Model
-            && in_array(DatabaseEncryption::class, class_uses($this->encryptionModel))
+            && method_exists($this->encryptionModel, 'getEncryptKey')
         ) {
             $model = $this->encryptionModel;
             $modelEncryptionColumns = $model::getEncryptedFields();
@@ -115,5 +115,20 @@ class DatabaseEncryptionQueryBuilder extends Builder
         $this->columns = $original;
 
         return collect($results);
+    }
+
+    /**
+     * @param $value
+     * @param $operator
+     * @param $decryptKey
+     * @param bool $useDefault
+     * @return array
+     */
+    public function prepareDecryptionValueOperatorAndDecryptKey($value, $operator, $decryptKey, $useDefault = false)
+    {
+        if ($useDefault) {
+            return [$operator, '=', $value];
+        }
+        return [$value, $operator, $decryptKey];
     }
 }
