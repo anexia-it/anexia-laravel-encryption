@@ -1,8 +1,9 @@
 {
   "name": "anexia/laravel-encryption",
   "description": "Encryption and decryption for eloquent models",
+  "version": "1.0.0",
   "type": "library",
-  "license": "proprietary",
+  "license": "MIT",
   "authors": [
     {
       "name": "Masood Lodin",
